@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Neuron:
 	def __init__(self, bias=0):
@@ -27,14 +28,10 @@ class Neuron:
 		return net
 
 	def calculate_delta(self, desired_output):
-		return self.calculate_error_output_derivative(desired_output) * self.calculate_output_net_derivative()
+		return (desired_output - self.output) * (-1) * (1 - self.output * self.output)	
 
-	def calculate_error_output_derivative(self, desired_output):
-		return (desired_output - self.output) * (-1)
-
-	def calculate_output_net_derivative(self):
-		return (1 - self.output * self.output)
-
+	def calculate_error(self, desired_output):
+		return (desired_output - self.output) * (desired_output - self.output) / 2
 
 
 class Layer:
@@ -59,7 +56,7 @@ class Layer:
 
 class Network:
 	def __init__(self, input_neuron_number=3, hidden_neuron_number=4, output_neuron_number=1, hidden_bias=0, output_bias=0):
-		self.alpha = 0.25
+		self.alpha = 0.15
 
 		self.hidden_layer = Layer(hidden_neuron_number, hidden_bias)
 		self.hidden_layer.initialize_weights(input_neuron_number)
@@ -82,7 +79,7 @@ class Network:
 			output_delta_weight_sum = 0.0
 			for j in range(0, len(self.output_layer.neurons)):
 				output_delta_weight_sum += output_deltas[j] * self.output_layer.neurons[j].weights[i]
-			hidden_deltas.append(self.hidden_layer.neurons[i].calculate_output_net_derivative() * output_delta_weight_sum)
+			hidden_deltas.append((1 - self.hidden_layer.neurons[i].output * self.hidden_layer.neurons[i].output) * output_delta_weight_sum)
 
 		for i in range(0, len(self.output_layer.neurons)):
 			for j in range(0, len(self.output_layer.neurons[i].weights)):
@@ -96,18 +93,82 @@ class Network:
 		for i in range(0, len(inputs)):
 			self.backpropagate(inputs[i], desired_outputs[i])
 
+	def calculate_error(self, desired_output):
+		total_error = 0.0
+		for i in range(0, len(self.output_layer.neurons)):
+			total_error += self.output_layer.neurons[i].calculate_error(desired_output[i])
+		return total_error / len(self.output_layer.neurons)
+
+
+plt.figure(1)
+plt.title("xor function tests")
+plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.6, hspace=0.6)
+
+network = Network(2,4,1)
+inputs = [[1,1],[1,0],[0,1],[0,0]]
+outputs = [0,1,1,0]
+errors = []
+iteration_number = []
+for i in range(0, 1000):
+	network.train(inputs, outputs)
+	network.feed_forward([1,0])
+	errors.append(network.calculate_error([1]))
+	iteration_number.append(i)
+plt.subplot(221)
+plt.title("xor with 2 inputs")
+plt.plot(iteration_number, errors)
+plt.xlabel("training iterations")
+plt.ylabel("error")
+
+network = Network(3,4,1)
+inputs = [[1,1,1],[1,1,0],[1,0,1],[0,1,1],[1,0,0],[0,1,0],[0,0,1],[0,0,0]]
+outputs = [0,0,1,1,1,1,0,0]
+errors = []
+iteration_number = []
+for i in range(0, 1000):
+	network.train(inputs, outputs)
+	network.feed_forward([1,0,1])
+	errors.append(network.calculate_error([1]))
+	iteration_number.append(i)
+plt.subplot(222)
+plt.title("xor with 3 inputs of which 3rd has no effect")
+plt.plot(iteration_number, errors)
+plt.xlabel("training iterations")
+plt.ylabel("error")
 
 network = Network()
 inputs = [[1,1,1],[1,1,0],[1,0,1],[0,1,1],[1,0,0],[0,1,0],[0,0,1],[0,0,0]]
 outputs = [1,0,0,0,1,1,1,0]
+errors = []
+iteration_number = []
 for i in range(0, 1000):
 	network.train(inputs, outputs)
-print(network.feed_forward([1,0,1]))
+	network.feed_forward([1,0,1])
+	errors.append(network.calculate_error([0]))
+	iteration_number.append(i)
+plt.subplot(223)
+plt.title("xor with 3 inputs")
+plt.plot(iteration_number, errors)
+plt.xlabel("training iterations")
+plt.ylabel("error")
+#print(network.feed_forward([1,0,1]))
 
 network = Network(4,4,1)
 inputs = [[1,1,1,1],[1,1,1,0],[1,1,0,1],[1,0,1,1],[0,1,1,1],[1,1,0,0],[1,0,1,0],[0,1,1,0],[1,0,0,1],[0,1,0,1],[0,0,1,1],[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]]
 outputs = [1,1,0,0,0,0,0,0,1,1,1,1,1,1,0,0]
-for i in range(0, 4000):
+errors = []
+iteration_number = []
+for i in range(0, 1000):
 	network.train(inputs, outputs)
-print(network.feed_forward([0,0,1,1]))
+	network.feed_forward([1,0,1,0])
+	errors.append(network.calculate_error([0]))
+	iteration_number.append(i)
+plt.subplot(224)
+plt.title("xor with 4 inputs of which 4th has no effect")
+plt.plot(iteration_number, errors)
+plt.xlabel("training iterations")
+plt.ylabel("error")
+
+plt.show()
+#print(network.feed_forward([1,0,1,0]))
 
