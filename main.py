@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 class Neuron:
 	def __init__(self, bias=0):
@@ -18,7 +17,7 @@ class Neuron:
 		return self.sigmoid(net)
 
 	def sigmoid(self, x):
-		return 1 / (1 + math.exp(-x))
+		return (1 / (1 + np.exp(-x)))
 
 	def calculate_net(self):
 		net = 0.0
@@ -60,7 +59,7 @@ class Layer:
 
 class Network:
 	def __init__(self, input_neuron_number=3, hidden_neuron_number=4, output_neuron_number=1, hidden_bias=0, output_bias=0):
-		self.alpha = 0.2
+		self.alpha = 0.25
 
 		self.hidden_layer = Layer(hidden_neuron_number, hidden_bias)
 		self.hidden_layer.initialize_weights(input_neuron_number)
@@ -97,13 +96,18 @@ class Network:
 		for i in range(0, len(inputs)):
 			self.backpropagate(inputs[i], desired_outputs[i])
 
+
 network = Network()
 inputs = [[1,1,1],[1,1,0],[1,0,1],[0,1,1],[1,0,0],[0,1,0],[0,0,1],[0,0,0]]
 outputs = [1,0,0,0,1,1,1,0]
-for i in range(0, 10000):
+for i in range(0, 1000):
 	network.train(inputs, outputs)
-
 print(network.feed_forward([1,0,1]))
 
-
+network = Network(4,4,1)
+inputs = [[1,1,1,1],[1,1,1,0],[1,1,0,1],[1,0,1,1],[0,1,1,1],[1,1,0,0],[1,0,1,0],[0,1,1,0],[1,0,0,1],[0,1,0,1],[0,0,1,1],[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]]
+outputs = [1,1,0,0,0,0,0,0,1,1,1,1,1,1,0,0]
+for i in range(0, 4000):
+	network.train(inputs, outputs)
+print(network.feed_forward([0,0,1,1]))
 
