@@ -103,7 +103,7 @@ outputs = [1,0,0,0,1,1,1,0]
 for i in range(0, 10000):
 	network.train(inputs, outputs)
 
-print(network.feed_forward([0,1,1]))
+print(network.feed_forward([1,0,1]))
 
 
 
