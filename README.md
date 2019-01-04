@@ -1,4 +1,6 @@
 # Multilayer Neural Network with 1 Hidden Layer
+A simple multilayer neural network with 1 hidden layer that is capable of training and learning with backpropagation algorithm.
+
 ## Platform
 Written with python 3.6.1
 Tested in Macos Mojave , 10.14.2
