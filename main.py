@@ -101,7 +101,6 @@ class Network:
 
 
 plt.figure(1)
-plt.title("xor function tests")
 plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.6, hspace=0.6)
 
 network = Network(2,4,1)
@@ -165,6 +164,42 @@ for i in range(0, 1000):
 	iteration_number.append(i)
 plt.subplot(224)
 plt.title("xor with 4 inputs of which 4th has no effect")
+plt.plot(iteration_number, errors)
+plt.xlabel("training iterations")
+plt.ylabel("error")
+
+plt.show()
+"""
+network = Network(4,4,1)
+plt.figure(2)
+inputs = [[1,1,1,1],[1,1,1,0],[1,1,0,1],[1,0,1,1],[0,1,1,1],[1,1,0,0],[1,0,1,0],[0,1,1,0],[1,0,0,1],[0,1,0,1],[0,0,1,1],[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]]
+outputs = [0,0,0,1,1,0,1,1,1,1,0,1,1,0,0,0]
+errors = []
+iteration_number = []
+for i in range(0, 1000):
+	network.train(inputs, outputs)
+	network.feed_forward([1,0,1,0])
+	errors.append(network.calculate_error([1]))
+	iteration_number.append(i)
+plt.subplot(221)
+plt.title("xor with 4 inputs of which 3rd and 4th has no effect")
+plt.plot(iteration_number, errors)
+plt.xlabel("training iterations")
+plt.ylabel("error")
+"""
+network = Network(4,4,1)
+plt.figure(2)
+inputs = [[1,1,1,1],[1,1,1,0],[1,1,0,1],[1,0,1,1],[0,1,1,1],[1,1,0,0],[1,0,1,0],[0,1,1,0],[1,0,0,1],[0,1,0,1],[0,0,1,1],[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]]
+outputs = [0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,0]
+errors = []
+iteration_number = []
+for i in range(0, 1000):
+	network.train(inputs, outputs)
+	network.feed_forward([1,0,1,1])
+	errors.append(network.calculate_error([1]))
+	iteration_number.append(i)
+#plt.subplot(222)
+plt.title("xor of xor of first and last 2 inputs ((1 xor 2) xor (3 xor 4))")
 plt.plot(iteration_number, errors)
 plt.xlabel("training iterations")
 plt.ylabel("error")
