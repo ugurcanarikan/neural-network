@@ -6,7 +6,6 @@ Written with python 3.6.1
 Tested in Macos Mojave , 10.14.2
 
 ## How to install dependencies
-In the same directory as the main.py,
 run
 `pip3 install numpy`
 and 
